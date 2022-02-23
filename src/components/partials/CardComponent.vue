@@ -11,7 +11,7 @@
 export default {
     name: 'CardComponent',
     props: {
-        'canzone': String
+        'canzone': Object
     }
 }
 </script>
