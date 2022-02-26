@@ -7,9 +7,8 @@
               <button>Ricerca</button>
           </div>
           -->
-          <SearchComponent @seleziona="filtraGenere" :listaDischi="listaCanzoni"/>
           <div class="row row-cols-5 justify-content-center">
-              <CardComponent v-for="(canzone, index) in listaGeneri" :key="index" :canzone="canzone">
+              <CardComponent v-for="(canzone, index) in filteredDiscs" :key="index" :canzone="canzone">
 
               </CardComponent>
             <!--<div class="col-2" v-for="(canzone, index) in listaCanzoni" :key="index">
@@ -26,7 +25,6 @@
 
 <script>
 import CardComponent from './partials/CardComponent.vue';
-import SearchComponent from './partials/SearchComponent.vue';
 
 const axios = require('axios');
 export default {
@@ -39,31 +37,46 @@ export default {
             endpoint: 'https://flynn.boolean.careers/exercises/api/array/music'
         }
     },
+    props: {
+        'selectedGenre': String,
+    },
     components: {
         CardComponent,
-        SearchComponent
     },
     computed: {
-        //filtraGenere() {
-          //  return 
-        //}
+        filteredDiscs() {
+            if(this.selectedGenre == '') {
+                return this.listaCanzoni;
+            } else {
+                return this.listaCanzoni.filter(disc => {
+                    return disc.genre == this.selectedGenre;
+                });
+            }
+        }
     },
     methods: {
         getMusic() {
             axios.get(this.endpoint)
             .then((response) => {
                 this.listaCanzoni = response.data.response;
+                this.listaCanzoni.forEach(element => {
+                    if(!this.listaGeneri.includes(element.genre)) {
+                        this.listaGeneri.push(element.genre)
+                    } 
+                });
+                this.$emit('genresList', this.listaGeneri);
+
             }) 
         },
-        filtraGenere() {
+        /*filtraGenere() {
             this.listaGeneri = [];
             const valore = document.getElementById('ricercaGenere').value;
             this.listaCanzoni.forEach(element => {
-                if(element.genre == valore) {
-                    this.listaGeneri.push(element)
+                if(!this.listaGeneri.includes(element.genre)) {
+                    this.listaGeneri.push(element.genre)
                 } 
             })
-        }
+        }*/
     },
     created() {
         this.getMusic();

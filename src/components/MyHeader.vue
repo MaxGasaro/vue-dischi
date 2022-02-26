@@ -3,12 +3,25 @@
       <div class="logo">
           <img src="../assets/img/Spotify_App_Logo.svg.png" alt="logo">
       </div>
+
+      <select v-model="selectedGenre" @change="$emit('selectedGenreEvt', selectedGenre)">
+          <option value="">Seleziona un genere</option>
+          <option v-for="(genre, index) in genreCreate" :key="index" :value="genre">{{genre}}</option>
+      </select>
   </header>
 </template>
 
 <script>
 export default {
-    name: 'MyHeader'
+    name: 'MyHeader',
+    props: {
+        'genreCreate': Array,
+    },
+    data() {
+        return {
+            selectedGenre: '',
+        }
+    }
 }
 </script>
 
@@ -17,7 +30,7 @@ export default {
     header {
         height: 100px;
         display: flex;
-        justify-content: flex-start;
+        justify-content: space-between;
         align-items: center;
         background-color: $primaryColor;
         .logo {
